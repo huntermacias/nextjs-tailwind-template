@@ -1,11 +1,13 @@
-import { Briefcase, ChartSpline, CircleCheckBig, HomeIcon, Inbox, Layers, Layers3, SearchIcon, SquarePen, UserRoundPlus } from "lucide-react";
+import { Briefcase, ChartSpline, CircleCheckBig, HomeIcon, Inbox, Layers, SearchIcon, SquarePen, UserRoundPlus } from "lucide-react";
 import { Button } from "./ui/button";
-import { SidebarItem } from "./sidebarItem";
 import Link from "next/link";
+import { SidebarItem } from "./sidebarItem";
 
-type Props = {}
+type Props = {
+  openSearch: () => void;
+};
 
-const Sidebar = (props: Props) => {
+const Sidebar = ({ openSearch }: Props) => {
   return (
     <div className="w-64 h-screen bg-[#191919] border-r border-[#262626]">
       <div className="py-3 w-full flex items-center justify-around">
@@ -14,14 +16,14 @@ const Sidebar = (props: Props) => {
             <SquarePen className="w-4 h-4" /> <span>New Issue</span>
           </div>
         </Button>
-        <div className="border border-[#262626] rounded-md h-8 flex items-center px-2 py-1">
+        <div onClick={openSearch} className="cursor-pointer border border-[#262626] rounded-md h-8 flex items-center px-2 py-1">
           <SearchIcon className="text-[#737373] w-4 h-4" />
         </div>
       </div>
 
-      <ul className='text-[#9f9f9f] px-4 space-y-2 text-xs'>
+      <ul className="text-[#9f9f9f] px-4 space-y-2 text-xs">
         <li className="hover:bg-[#202020] p-1 rounded-sm flex items-center space-x-2">
-          <HomeIcon className="h-4 w-4" />  <span>Home</span>
+          <HomeIcon className="h-4 w-4" /> <span>Home</span>
         </li>
         <li className="hover:bg-[#202020] p-1 rounded-sm flex items-center space-x-2">
           <UserRoundPlus className="h-4 w-4" />
@@ -34,10 +36,9 @@ const Sidebar = (props: Props) => {
 
       <SidebarItem name="Workspace" />
 
-
-      <ul className='text-[#9f9f9f] px-4 space-y-2 text-xs'>
+      <ul className="text-[#9f9f9f] px-4 space-y-2 text-xs">
         <li className="hover:bg-[#202020] p-1 rounded-sm flex items-center space-x-2">
-          <Briefcase className="h-4 w-4" />  <span>Projects</span>
+          <Briefcase className="h-4 w-4" /> <span>Projects</span>
         </li>
         <li className="hover:bg-[#202020] p-1 rounded-sm flex items-center space-x-2">
           <Layers className="h-4 w-4" /> <span>Views</span>
@@ -45,9 +46,7 @@ const Sidebar = (props: Props) => {
         <li className="hover:bg-[#202020] p-1 rounded-sm flex justify-between items-center space-x-2">
           <div className="flex items-center justify-around space-x-2">
             <CircleCheckBig className="h-4 w-4" />
-              <span>
-                Cycles
-              </span>
+            <span>Cycles</span>
           </div>
           <span className="bg-[#212c47] text-[#396ae6] rounded-full flex px-2 py-0.5 text-xs">
             Pro
@@ -59,9 +58,11 @@ const Sidebar = (props: Props) => {
       </ul>
 
       <SidebarItem name="Your Favorites" />
+      <p className="text-xs text-[#606060] text-center">No favorites yet</p>
 
+      <SidebarItem name="Your Projects" />
     </div>
-  )
-}
+  );
+};
 
 export default Sidebar;
