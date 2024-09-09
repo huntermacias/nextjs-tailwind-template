@@ -27,12 +27,10 @@ const TagCreator = ({ getSelectedTags, defaultTags = [] }: TagCreatorProps) => {
   const [selectedColor, setSelectedColor] = useState<keyof typeof tagColors>('red');
   const [error, setError] = useState<string | null>(null);
 
-  // Update the parent component with selected tags
   useEffect(() => {
     getSelectedTags(selectedTags);
   }, [selectedTags]);
 
-  // Add new tag
   const handleAddTag = () => {
     if (!newTagName.trim()) {
       setError('Tag name cannot be empty');
@@ -57,7 +55,6 @@ const TagCreator = ({ getSelectedTags, defaultTags = [] }: TagCreatorProps) => {
     setError(null);  // Clear error after successful addition
   };
 
-  // Delete a tag
   const handleDeleteTag = (tagId: string) => {
     setSelectedTags(selectedTags.filter(tag => tag.id !== tagId));
   };
@@ -66,15 +63,15 @@ const TagCreator = ({ getSelectedTags, defaultTags = [] }: TagCreatorProps) => {
     <AlertDialog>
       <div className="flex flex-col gap-4 w-full">
         {/* Tag List */}
-        <div className="flex flex-wrap gap-2 mb-1">
+        <div className="flex flex-wrap gap-2">
           {selectedTags.map((tag) => (
             <div
               key={tag.id}
-              className="flex items-center gap-2 px-2 border border-[#a3a3a3]/60 py-1.5 mt-2 rounded-lg shadow-sm transition-all"
+              className="flex items-center gap-2 px-1 py-1 mt-1 border border-[#a3a3a3]/60 rounded-lg shadow-sm transition-all"
               style={{ backgroundColor: tagColors[tag.color] }}
             >
-              <Tag className="w-4 h-4 text-white" />
-              <span className="text-xs text-white font-medium">{tag.name}</span>
+              <Tag className="w-4 h-4 text-[#afafaf]" />
+              <span className="text-xs text-[#afafaf] font-medium">{tag.name}</span>
               <X
                 size={16}
                 className="cursor-pointer text-white hover:text-red-500 transition-all"
@@ -85,14 +82,14 @@ const TagCreator = ({ getSelectedTags, defaultTags = [] }: TagCreatorProps) => {
         </div>
 
         {/* Input and Controls */}
-        <div className="flex flex-col gap-2 w-full">
+        <div className="grid grid-cols-4 gap-2 w-full">
           {/* Tag Input */}
           <input
             type="text"
             value={newTagName}
             onChange={(e) => setNewTagName(e.target.value)}
-            className="bg-[#1e1e1e] bg-opacity-80 backdrop-blur-md text-white rounded-md px-3 py-1 w-full text-sm"
-            placeholder="Enter tag name"
+            className="bg-[#1e1e1e] bg-opacity-80 backdrop-blur-md text-[#afafaf] rounded-md px-2 py-1 w-full text-sm col-span-2"
+            placeholder="enter tag name"
           />
 
           {/* Color Selector */}
@@ -102,7 +99,7 @@ const TagCreator = ({ getSelectedTags, defaultTags = [] }: TagCreatorProps) => {
             className="bg-[#1e1e1e] text-[#afafaf] border border-[#333] text-xs px-2 py-1 rounded-md"
           >
             {Object.keys(tagColors).map(color => (
-              <option key={color} value={color} className={`bg-${color}-500 text-white`}>
+              <option key={color} value={color}>
                 {color.charAt(0).toUpperCase() + color.slice(1)}
               </option>
             ))}
@@ -111,7 +108,7 @@ const TagCreator = ({ getSelectedTags, defaultTags = [] }: TagCreatorProps) => {
           {/* Add Tag Button */}
           <button
             onClick={handleAddTag}
-            className="self-start bg-green-600/20 hover:bg-green-500/40 text-gray-300 text-sm px-2 py-0.5 rounded-md transition-all flex items-center gap-2 focus:ring-2 focus:ring-green-500"
+            className="self-start bg-green-600/10 hover:bg-green-500/20 text-gray-300 text-xs px-2 py-1 rounded-md transition-all flex items-center gap-2 focus:ring-2 focus:ring-green-500"
           >
             <Plus size={16} />
             Add Tag
