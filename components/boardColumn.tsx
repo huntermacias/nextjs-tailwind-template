@@ -1,4 +1,3 @@
-// BoardColumn.tsx
 import { useSortable, SortableContext } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { TaskCard } from "./taskCard";
@@ -6,7 +5,7 @@ import { Button } from "./ui/button";
 import { Card, CardHeader, CardContent } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
 import { useState } from "react";
-import { GripVertical, Plus, Trash } from "lucide-react";
+import { GripVertical, Plus, Trash, ChevronDown } from "lucide-react";
 import { Column, Task } from "@/types";
 
 interface BoardColumnProps {
@@ -45,6 +44,11 @@ export function BoardColumn({
         tags: [],
         dueDate: new Date(),
         priority: 'medium',
+        completed: false,
+        assignee: "",
+        timeSpent: 0,
+        comments: [],
+        attachments: []
       };
       onTaskAdd(column.id, newTask);
       setNewTaskTitle('');
@@ -57,50 +61,66 @@ export function BoardColumn({
   };
 
   return (
-    <Card ref={setNodeRef} style={style} className="w-[350px] bg-[#1e1e1e] flex flex-col">
-      <CardHeader className="p-4 border-b flex items-center justify-between">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="w-full max-w-[450px] flex flex-col bg-[#1b1b1b] border border-[#2a2a2a] rounded-lg shadow-md transition-transform hover:shadow-lg">
+
+      {/* Column Header */}
+      <CardHeader className="p-3 flex items-center justify-between bg-[#1e1e1e] border-b border-[#2a2a2a] rounded-t-lg">
         {isEditingTitle ? (
           <input
             value={columnTitle}
             onChange={(e) => setColumnTitle(e.target.value)}
             onBlur={handleColumnRename}
-            className="bg-transparent border-b border-gray-500 text-white"
+            className="bg-transparent border-b border-gray-500 text-white outline-none focus:border-green-500 transition-colors"
+            autoFocus
           />
         ) : (
-          <span className="text-white font-semibold">{column.title}</span>
+          <span
+            className="text-white font-semibold hover:text-green-400 transition-colors cursor-pointer"
+            onClick={() => setIsEditingTitle(true)}
+          >
+            {column.title} <ChevronDown className="inline-block w-4 h-4 ml-1 text-gray-400" />
+          </span>
         )}
 
         <div className="flex space-x-2">
-          <Button onClick={() => setIsEditingTitle(true)} variant="ghost" className="text-primary/50">
+          <Button variant="ghost" className="text-white hover:text-green-500 p-1" onClick={() => setIsEditingTitle(true)}>
             <GripVertical />
           </Button>
-          <Button onClick={() => onColumnDelete(column.id)} variant="ghost" className="text-red-600">
+          <Button variant="ghost" className="text-red-600 hover:bg-red-700 hover:text-white transition-colors p-1" onClick={() => onColumnDelete(column.id)}>
             <Trash />
+          </Button>
+          <Button variant="ghost" className="text-green-600 hover:text-green-500 transition-all p-1" onClick={handleAddTask}>
+            <Plus />
           </Button>
         </div>
       </CardHeader>
-      <ScrollArea>
-        <CardContent className="p-2 flex-grow">
+
+      {/* Scrollable Task List */}
+      <ScrollArea className="overflow-auto max-h-[450px]">
+        <CardContent className="p-2 space-y-4">
           <SortableContext items={column.tasks.map((task) => task.id)}>
             {column.tasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
           </SortableContext>
-
-          {/* Add Task Section */}
-          <div className="flex items-center mt-4">
-            <input
-              value={newTaskTitle}
-              onChange={(e) => setNewTaskTitle(e.target.value)}
-              className="w-full bg-[#2e2e2e] text-white p-2 rounded"
-              placeholder="New task title"
-            />
-            <Button onClick={handleAddTask} className="ml-2">
-              <Plus />
-            </Button>
-          </div>
         </CardContent>
       </ScrollArea>
-    </Card>
+
+      {/* Add Task Section */}
+      <div className="px-4 py-3 border-t border-[#2a2a2a] bg-[#1e1e1e] flex items-center justify-between">
+        <input
+          value={newTaskTitle}
+          onChange={(e) => setNewTaskTitle(e.target.value)}
+          className="w-full bg-[#2e2e2e] text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+          placeholder="New task title"
+        />
+        <Button onClick={handleAddTask} className="ml-2 bg-green-600 hover:bg-green-500 text-white transition-colors">
+          <Plus />
+        </Button>
+      </div>
+    </div>
   );
 }
