@@ -1,15 +1,46 @@
-import { Briefcase, ChartSpline, CircleCheckBig, HomeIcon, Inbox, Layers, SearchIcon, SquarePen, UserRoundPlus } from "lucide-react";
+'use client';
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { SidebarItem } from "./sidebarItem";
+import { useState, useEffect, useRef } from "react";
+import { Briefcase, ChartSpline, CircleCheckBig, HomeIcon, Inbox, Layers, SearchIcon, SquarePen, UserRoundPlus } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandShortcut } from "./ui/command";
 
-type Props = {
-  openSearch: () => void;
-};
+type Props = {};
 
-const Sidebar = ({ openSearch }: Props) => {
+const Sidebar = ({ }: Props) => {
+  const [isSearchOpen, setSearchOpen] = useState(false);
+  const searchModalRef = useRef<HTMLDivElement | null>(null);
+
+  function openSearch() {
+    setSearchOpen(true);
+  }
+
+  function closeSearch() {
+    setSearchOpen(false);
+  }
+
+  // Close the search modal when clicking outside of it
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (searchModalRef.current && !searchModalRef.current.contains(event.target)) {
+        closeSearch();
+      }
+    }
+
+    if (isSearchOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSearchOpen]);
+
   return (
-    <div className="w-64 h-screen bg-[#191919] border-r border-[#262626]">
+    <div className="w-64 h-screen bg-[#191919] border-r border-[#262626] ">
       <div className="py-3 w-full flex items-center justify-around">
         <Button className="text-[#606060] justify-start items-center h-8 bg-[#191919] w-[200px] border border-[#2e2e2e]">
           <div className="flex items-center justify-center gap-1 text-xs">
@@ -61,6 +92,67 @@ const Sidebar = ({ openSearch }: Props) => {
       <p className="text-xs text-[#606060] text-center">No favorites yet</p>
 
       <SidebarItem name="Your Projects" />
+
+      {isSearchOpen && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[#191919] backdrop-blur-sm bg-opacity-70 z-50">
+          <div ref={searchModalRef} className="w-[500px] bg-[#191919] border border-[#262626] p-4 rounded-lg shadow-lg">
+            <Command>
+              <CommandInput placeholder="Type a command or search..." />
+              <CommandList>
+                <CommandEmpty>No results found.</CommandEmpty>
+
+                <CommandGroup heading="Issue">
+                  <CommandItem onSelect={closeSearch}>
+                    <SquarePen className="w-4 h-4 mr-2" />
+                    Create new issue
+                    <CommandShortcut>⌘C</CommandShortcut>
+                  </CommandItem>
+                </CommandGroup>
+
+                <CommandGroup heading="Project">
+                  <CommandItem onSelect={closeSearch}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Create new project
+                    <CommandShortcut>⌘P</CommandShortcut>
+                  </CommandItem>
+                </CommandGroup>
+
+                <CommandGroup heading="Cycle">
+                  <CommandItem onSelect={closeSearch}>
+                    <CircleCheckBig className="w-4 h-4 mr-2" />
+                    Create new cycle
+                    <CommandShortcut>⌘Q</CommandShortcut>
+                  </CommandItem>
+                </CommandGroup>
+
+                <CommandGroup heading="Module">
+                  <CommandItem onSelect={closeSearch}>
+                    <Layers className="w-4 h-4 mr-2" />
+                    Create new module
+                    <CommandShortcut>⌘M</CommandShortcut>
+                  </CommandItem>
+                </CommandGroup>
+
+                <CommandGroup heading="View">
+                  <CommandItem onSelect={closeSearch}>
+                    <Inbox className="w-4 h-4 mr-2" />
+                    Create new view
+                    <CommandShortcut>⌘V</CommandShortcut>
+                  </CommandItem>
+                </CommandGroup>
+
+                <CommandGroup heading="Page">
+                  <CommandItem onSelect={closeSearch}>
+                    <ChartSpline className="w-4 h-4 mr-2" />
+                    Create new page
+                    <CommandShortcut>⌘P</CommandShortcut>
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
