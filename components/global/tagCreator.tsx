@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { AlertDialog } from "../ui/alert-dialog";
 import { X, Plus, Tag } from "lucide-react";
+import { AnimatedTooltip } from "../ui/animated-tooltip";
+import { contributors } from "@/data/contributors";
 
 const tagColors = {
   red: 'rgba(255, 0, 0, 0.4)',       // Red with 40% opacity
@@ -79,6 +81,9 @@ const TagCreator = ({ getSelectedTags, defaultTags = [] }: TagCreatorProps) => {
               />
             </div>
           ))}
+          <div className="flex flex-row items-center justify-end mt-5 w-full">
+            <AnimatedTooltip items={contributors} />
+          </div>
         </div>
 
         {/* Input and Controls */}

@@ -64,9 +64,9 @@ export function BoardColumn({
     <div
       ref={setNodeRef}
       style={style}
-      className="w-full max-w-[450px] h-2/3 flex flex-col bg-[#101010]/60 border border-[#2a2a2a] rounded-lg shadow-md transition-transform hover:shadow-lg"
+      className="w-full max-w-[450px] h-2/3 flex flex-col bg-[#101010]/80 border border-[#2a2a2a] rounded-lg shadow-md transition-transform hover:shadow-lg"
     >
-      <CardHeader className="flex flex-row items-center p-4 bg-[#232323]/70 backdrop-blur-lg border-b border-[#2a2a2a] rounded-t-lg shadow-md">
+      <CardHeader className="flex flex-row items-center p-4 bg-[#121111]/30 backdrop-blur-lg border-b border-[#2a2a2a] rounded-t-lg shadow-md">
 
         {/* left side */}
         {isEditingTitle ? (
@@ -90,20 +90,20 @@ export function BoardColumn({
         )}
 
         {/* right side */}
-        <div className="flex justify-end w-full">
+        <div className="flex justify-end w-full gap-2">
           <Button
             variant="ghost"
-            className="flex items-center justify-center text-white hover:text-[#00ff99] bg-[#1f1f1f] hover:bg-[#3f3f3f] transition-all rounded-lg"
+            className="flex items-center justify-center text-white hover:text-[#00ff99] bg-[#1f1f1f]/20 hover:bg-[#3f3f3f] transition-all rounded-lg"
             onClick={() => setIsEditingTitle(true)}
           >
-            <FilePenIcon className="w-5 h-5 text-[#6862bd]" />
+            <FilePenIcon className="w-4 h-4 text-[#adadae]" />
           </Button>
           <Button
             variant="ghost"
-            className="flex items-center justify-center text-red-500 hover:bg-red-600 hover:text-white p-2 bg-[#1f1f1f] transition-all rounded-lg"
+            className="flex items-center justify-center text-red-500 hover:bg-red-600 hover:text-white bg-[#1f1f1f]/20 transition-all rounded-lg"
             onClick={() => onColumnDelete(column.id)}
           >
-            <Trash className="w-5 h-5" />
+            <Trash className="w-4 h-4" />
           </Button>
         </div>
 
@@ -124,15 +124,15 @@ export function BoardColumn({
       </div>
 
       {/* Add Task Section Fixed at the Bottom */}
-      <div className="mt-auto px-4 py-3 border-t border-[#2a2a2a] bg-[#1e1e1e] flex items-center justify-between">
+      <div className="mt-auto px-4 py-3 border-t border-[#2a2a2a] bg-[#121111]/80 flex items-center justify-between">
         <input
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
-          className="w-full bg-[#2e2e2e] text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+          className="w-full bg-[#2e2e2e] text-white p-2 rounded-md h-8 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
           placeholder="New task title"
         />
-        <Button onClick={handleAddTask} className="ml-2 bg-green-600 hover:bg-green-500 text-white transition-colors">
-          <Plus />
+        <Button onClick={handleAddTask} className="ml-2 h-7 w-12 p-0 bg-green-600/30 hover:bg-green-500 text-white transition-colors">
+          <Plus className="h-5 w-5" />
         </Button>
       </div>
     </div>

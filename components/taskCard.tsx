@@ -17,7 +17,7 @@ export function TaskCard({ task }: TaskCardProps) {
   };
 
   return (
-    <div className="p-3 bg-[#2e2e2e] border border-[#3a3a3a] rounded-md shadow-sm hover:shadow-lg transition-all">
+    <div className="p-3 bg-[#1f1f1f] border border-[#3a3a3a] rounded-md shadow-md shadow-gray-800 hover:shadow-lg transition-all">
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-white font-medium text-sm">{task.title}</h3>
         <div className="flex space-x-2">
@@ -41,8 +41,8 @@ export function TaskCard({ task }: TaskCardProps) {
       </div>
 
       {/* Tags Section */}
-      <div className="p-4 bg-[#191919]/40 backdrop-blur-sm border border-[#191919]/60 rounded-lg mt-3">
-      <h3 className="text-white font-semibold">Manage Task Tags</h3>
+      <div className="p-4 bg-[#191919]/10 backdrop-blur-sm border border-[#191919]/60 rounded-lg mt-3">
+      {/* <h3 className="text-white font-semibold">Manage Task Tags</h3> */}
       <TagCreator getSelectedTags={setTags} defaultTags={tags} />
     </div>    </div>
   );
