@@ -1,12 +1,16 @@
-import { useSortable, SortableContext } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { TaskCard } from "./taskCard";
-import { Button } from "./ui/button";
-import { Card, CardHeader, CardContent } from "./ui/card";
-import { ScrollArea } from "./ui/scroll-area";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
-import { GripVertical, Plus, Trash, ChevronDown, FileIcon, FilePenIcon } from "lucide-react";
+import { ChevronDown, FilePenIcon, Plus, Trash } from "lucide-react";
 import { Column, Task } from "@/types";
+import { TaskCard } from "./taskCard";
 
 interface BoardColumnProps {
   column: Column;
@@ -21,18 +25,9 @@ export function BoardColumn({
   onTaskAdd,
   onColumnDelete,
 }: BoardColumnProps) {
-  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskTitle, setNewTaskTitle] = useState("");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [columnTitle, setColumnTitle] = useState(column.title);
-
-  const { setNodeRef, attributes, listeners, transform, transition } = useSortable({
-    id: column.id,
-  });
-
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-  };
 
   const handleAddTask = () => {
     if (newTaskTitle.trim()) {
@@ -40,18 +35,18 @@ export function BoardColumn({
         id: Date.now().toString(),
         columnId: column.id,
         title: newTaskTitle,
-        description: '',
+        description: "",
         tags: [],
         dueDate: new Date(),
-        priority: 'medium',
+        priority: "medium",
         completed: false,
         assignee: "",
         timeSpent: 0,
         comments: [],
-        attachments: []
+        attachments: [],
       };
       onTaskAdd(column.id, newTask);
-      setNewTaskTitle('');
+      setNewTaskTitle("");
     }
   };
 
@@ -60,81 +55,87 @@ export function BoardColumn({
     onColumnRename(column.id, columnTitle);
   };
 
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="w-full max-w-[450px] h-2/3 flex flex-col bg-[#101010]/80 border border-[#2a2a2a] rounded-lg shadow-md transition-transform hover:shadow-lg"
-    >
-      <CardHeader className="flex flex-row items-center p-4 bg-[#121111]/30 backdrop-blur-lg border-b border-[#2a2a2a] rounded-t-lg shadow-md">
+  // Task status color and label data
+  const statusMap = {
+    backlog: { color: "bg-gray-500/30", label: "Backlog" },
+    todo: { color: "bg-yellow-500/30", label: "Todo" },
+    inProgress: { color: "bg-blue-500/30", label: "In Progress" },
+    done: { color: "bg-green-500/30", label: "Done" },
+  } as any;
 
-        {/* left side */}
+  const { color, label } = statusMap[column.title.toLowerCase()] || statusMap.backlog;
+
+  return (
+    <div className="w-full max-w-[450px] h-full flex flex-col bg-[#101010]/80 border border-[#333] rounded-lg shadow-md transition-transform hover:shadow-lg">
+      <CardHeader className="flex flex-row items-center justify-between p-4 bg-[#121111]/30 backdrop-blur-lg border-b border-[#333] rounded-t-lg shadow-md">
+        {/* Column Title with Status Dot */}
         {isEditingTitle ? (
           <input
             value={columnTitle}
             onChange={(e) => setColumnTitle(e.target.value)}
             onBlur={handleColumnRename}
-            className="bg-transparent border-b border-[#5a5a5a] text-white outline-none focus:border-[#00ff99] transition-colors w-full text-lg p-1"
+            className="bg-transparent border-b border-[#333] text-white outline-none transition-colors w-full text-lg p-1"
             autoFocus
           />
         ) : (
-          <span
-            className="text-white text-sm font-semibold cursor-pointer hover:text-[#00ff99] transition-all w-full"
-            onClick={() => setIsEditingTitle(true)}
-          >
-            {column.title}
-            <span className="text-xs text-[#bebdbd] ml-2 bg-blue-500/30 rounded-xl px-3 py-0.5"> {column.tasks.length}</span>
-
-            <ChevronDown className="inline-block w-5 h-5 ml-2 text-[#8a8a8a] hover:text-[#00ff99] transition-all" />
-          </span>
+          <div className="flex items-center gap-2">
+            {/* Status Dot */}
+            <div
+              className={`w-3 h-3 rounded-full ${color} sm:w-4 sm:h-4`}
+              aria-label={label}
+            ></div>
+            {/* Status Label - responsive */}
+            <span className="hidden sm:block text-xs md:text-sm text-white font-semibold">
+              {label}
+            </span>
+          </div>
         )}
 
-        {/* right side */}
-        <div className="flex justify-end w-full gap-2">
+        {/* Edit and Delete Buttons */}
+        <div className="flex justify-end w-full sm:w-auto">
           <Button
             variant="ghost"
-            className="flex items-center justify-center text-white hover:text-[#00ff99] bg-[#1f1f1f]/20 hover:bg-[#3f3f3f] transition-all rounded-lg"
+            className="flex items-center justify-center text-white hover:text-[#00ff99] hover:bg-[#3f3f3f]/30 transition-all rounded-lg px-1.5 py-0.5"
             onClick={() => setIsEditingTitle(true)}
           >
             <FilePenIcon className="w-4 h-4 text-[#adadae]" />
           </Button>
           <Button
             variant="ghost"
-            className="flex items-center justify-center text-red-500 hover:bg-red-600 hover:text-white bg-[#1f1f1f]/20 transition-all rounded-lg"
+            className="flex items-center justify-center text-red-500 hover:bg-red-600/30 hover:text-white transition-all rounded-lg px-1.5 py-0.5"
             onClick={() => onColumnDelete(column.id)}
           >
             <Trash className="w-4 h-4" />
           </Button>
         </div>
-
       </CardHeader>
 
-
       {/* Scrollable Task List */}
-      <div className="">
-        <ScrollArea className="">
+      <div className="flex-grow">
+        <ScrollArea>
           <CardContent className="p-2 space-y-4">
-            <SortableContext items={column.tasks.map((task) => task.id)}>
-              {column.tasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))}
-            </SortableContext>
+            {column.tasks.map((task) => (
+              <TaskCard key={task.id} task={task} />
+            ))}
           </CardContent>
         </ScrollArea>
       </div>
 
-      {/* Add Task Section Fixed at the Bottom */}
-      <div className="mt-auto px-4 py-3 border-t border-[#2a2a2a] bg-[#121111]/80 flex items-center justify-between">
+      {/* Add Task Section */}
+      <CardFooter className="border-t border-[#333] bg-[#121111]/80 flex items-center justify-between px-4 py-3">
         <input
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
           className="w-full bg-[#2e2e2e] text-white p-2 rounded-md h-8 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
           placeholder="New task title"
         />
-        <Button onClick={handleAddTask} className="ml-2 h-7 w-12 p-0 bg-green-600/30 hover:bg-green-500 text-white transition-colors">
+        <Button
+          onClick={handleAddTask}
+          className="ml-2 h-7 w-12 p-0 bg-green-600/30 hover:bg-green-500 text-white transition-colors"
+        >
           <Plus className="h-5 w-5" />
         </Button>
-      </div>
+      </CardFooter>
     </div>
   );
 }

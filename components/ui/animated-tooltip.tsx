@@ -52,7 +52,8 @@ export const AnimatedTooltip = ({
                 initial={{ opacity: 0, y: 20, scale: 0.6 }}
                 animate={{
                   opacity: 1,
-                  y: 0,
+                  y: 20,
+                  x: -90,
                   scale: 1,
                   transition: {
                     type: "spring",
@@ -60,13 +61,13 @@ export const AnimatedTooltip = ({
                     damping: 10,
                   },
                 }}
-                exit={{ opacity: 0, y: 20, scale: 0.6 }}
+                exit={{ opacity: 0, y: 20, scale: 0.4 }}
                 style={{
                   translateX: translateX,
                   rotate: rotate,
                   whiteSpace: "nowrap",
                 }}
-                className="absolute -top-16 -left-1/2 translate-x-1/2 flex text-xs flex-col items-center justify-center rounded-md bg-black/90 shadow-lg px-4 py-2 backdrop-blur-md"
+                className="absolute -top-16 -left-1/2 translate-x-1/2 flex text-xs flex-col items-center justify-center rounded-md bg-[#333]/40 shadow-lg px-4 py-2 backdrop-blur-md"
               >
                 <div className="font-bold text-white">{item.name}</div>
                 <div className="text-white text-xs">{item.designation}</div>
@@ -79,7 +80,7 @@ export const AnimatedTooltip = ({
             width={60}
             src={item.image}
             alt={item.name}
-            className="object-cover !m-0 !p-0 object-top rounded-full h-8 w-8 border-2 border-white group-hover:scale-110 transition-transform duration-500"
+            className="object-cover !m-0 !p-0 object-top rounded-full h-6 w-6 border-2 border-white group-hover:scale-110 transition-transform duration-500"
           />
         </div>
       ))}

@@ -1,49 +1,50 @@
-// components/TaskCard.tsx
-
 import { Tag, Task } from "@/types";
 import { useState } from "react";
 import { CalendarIcon, UserIcon, TagIcon, CheckCircleIcon } from "lucide-react";
-import TagCreator from "./global/tagCreator";
+import TagCreator from "./global/tagCreator2";
 
+// Define the props for TaskCard
 interface TaskCardProps {
   task: Task;
 }
 
 export function TaskCard({ task }: TaskCardProps) {
-  const [tags, setTags] = useState(task.tags);
+  const [tags, setTags] = useState<Tag[]>(task.tags || []);
 
-  const handleTagUpdate = (newTags: Tag[]) => {
-    setTags(newTags);  // Update tags dynamically
+  // Function to handle tag updates from TagCreator
+  const handleTagUpdate = (newTags: Tag[]): void => {
+    setTags(newTags);  // Update the tags state dynamically when changes occur
   };
 
   return (
-    <div className="p-3 bg-[#1f1f1f] border border-[#3a3a3a] rounded-md shadow-md shadow-gray-800 hover:shadow-lg transition-all">
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-white font-medium text-sm">{task.title}</h3>
-        <div className="flex space-x-2">
-          <CheckCircleIcon className="text-green-500 w-4 h-4" />
-        </div>
+    <div className="p-4 bg-[#1f1f1f] rounded-md shadow-md hover:shadow-lg transition-all">
+      {/* Task Title and Completion Status */}
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-white font-semibold text-sm sm:text-base">{task.title}</h3>
+        <CheckCircleIcon className="text-green-500 w-5 h-5" />
       </div>
 
-      <div className="text-gray-400 text-xs space-y-1">
-        <div className="flex items-center space-x-1">
-          <TagIcon className="w-3 h-3 text-gray-500" />
-          <span>Priority: {task.priority}</span>
+      {/* Task Details (Priority, Due Date, Assignee) */}
+      <div className="text-gray-400 text-sm space-y-2">
+        <div className="flex items-center space-x-2">
+          <TagIcon className="w-4 h-4 text-gray-500" />
+          <span className="text-sm">Priority: {task.priority}</span>
         </div>
-        <div className="flex items-center space-x-1">
-          <CalendarIcon className="w-3 h-3 text-gray-500" />
-          <span>Due: {task.dueDate.toLocaleDateString()}</span>
+        <div className="flex items-center space-x-2">
+          <CalendarIcon className="w-4 h-4 text-gray-500" />
+          <span className="text-sm">Due: {new Date(task.dueDate).toLocaleDateString()}</span>
         </div>
-        <div className="flex items-center space-x-1">
-          <UserIcon className="w-3 h-3 text-gray-500" />
-          <span>Assigned to: {task.assignee}</span>
+        <div className="flex items-center space-x-2">
+          <UserIcon className="w-4 h-4 text-gray-500" />
+          <span className="text-sm">Assigned to: {task.assignee || "Unassigned"}</span>
         </div>
       </div>
 
       {/* Tags Section */}
-      <div className="p-4 bg-[#191919]/10 backdrop-blur-sm border border-[#191919]/60 rounded-lg mt-3">
-      {/* <h3 className="text-white font-semibold">Manage Task Tags</h3> */}
-      <TagCreator getSelectedTags={setTags} defaultTags={tags} />
-    </div>    </div>
+      <div className="mt-4 p-4 bg-[#191919]/20 backdrop-blur border border-[#333]/60 rounded-lg">
+        <h4 className="text-white font-semibold mb-2">Manage Task Tags</h4>
+        <TagCreator defaultTags={tags} getSelectedTags={handleTagUpdate} />
+      </div>
+    </div>
   );
 }
