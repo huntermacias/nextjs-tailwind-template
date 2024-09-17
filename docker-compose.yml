@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  prisma:
+    image: node:18
+    working_dir: /app
+    command: bash -c "npm install && npx prisma db push"
+    environment:
+      DATABASE_URL: "postgresql://postgres.kxzwdcybxxererzzzfyf:Supabase123!@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
+    volumes:
+      - .:/app

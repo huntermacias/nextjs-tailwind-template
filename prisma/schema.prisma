@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  seed = "ts-node ./prisma/seed.ts"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id         String    @id @default(uuid())
+  name       String
+  email      String    @unique
+  password   String
+  role       Role      @default(USER)
+  posts      Post[]
+  comments   Comment[]
+  profile    Profile?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Profile {
+  id        String     @id @default(uuid())
+  bio       String?
+  avatarUrl String?
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id])
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Post {
+  id          String     @id @default(uuid())
+  title       String
+  content     String
+  published   Boolean    @default(false)
+  userId      String
+  author      User       @relation(fields: [userId], references: [id])
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  tags        Tag[]      @relation("PostTags")
+  comments    Comment[]
+  views       Int        @default(0)
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?  // Soft delete functionality
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  posts     Post[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  posts     Post[]    @relation("PostTags")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Comment {
+  id        String    @id @default(uuid())
+  content   String
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id])
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum Role {
+  ADMIN
+  USER
+  MODERATOR
+}
